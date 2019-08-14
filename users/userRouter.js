@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Users = require('./userDb.js');
+const Posts = require('../posts/postDb.js');
 
 const router = express.Router();
 
@@ -14,18 +15,27 @@ router.post('/', validateUser, (req, res) => {
         });
 });
 
-router.post('/:id/posts', (req, res) => {
+// not done
+router.post('/:id/posts', validatePost, (req, res) => {
+    const postData = {...req.body, post_id: req.params.id};
 
+    Posts.insert(req.body)
+        .then(post => {
+            res.status(201).json(post);
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'Error creating new post' });
+        })
 });
 
 router.get('/', (req, res) => {
     Users.get()
-    .then(users => {
-        res.status(200).json(users);
-    })
-    .catch(error => {
-        res.status(500).json({ message: 'Error getting users list' });
-    });
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'Error getting users list' });
+        });
 });
 
 router.get('/:id', validateUserId, (req, res) => {
@@ -44,8 +54,16 @@ router.get('/:id/posts', validateUserId, (req, res) => {
         });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateUserId, (req, res) => {
+    const { id } = req.params;
 
+    Users.remove(id)
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'Error deleting the user' });
+        });
 });
 
 router.put('/:id', (req, res) => {
