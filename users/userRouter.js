@@ -59,14 +59,31 @@ router.delete('/:id', validateUserId, (req, res) => {
 
     Users.remove(id)
         .then(user => {
-            res.status(200).json(user);
+            if(user) {
+                res.status(200).json({ message: 'User Successfully Deleted!' });
+            } else {
+                res.status(500).json({ message: 'Error deleting the user' });
+            }
         })
         .catch(error => {
             res.status(500).json({ message: 'Error deleting the user' });
         });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
+    const { id } = req.params;
+
+    Users.update(id, req.body)
+        .then(user => {
+            if(user) {
+                res.status(200).json({ message: 'User Successfully Updated!' });
+            } else {
+                res.status(500).json({ message: 'Error updating the user' });
+            }
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'Error deleting the user' });
+        });
 
 });
 
