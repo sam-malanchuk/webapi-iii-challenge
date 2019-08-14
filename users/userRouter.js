@@ -15,11 +15,10 @@ router.post('/', validateUser, (req, res) => {
         });
 });
 
-// not done
 router.post('/:id/posts', validatePost, (req, res) => {
-    const postData = {...req.body, post_id: req.params.id};
+    const postData = {...req.body, user_id: req.params.id};
 
-    Posts.insert(req.body)
+    Posts.insert(postData)
         .then(post => {
             res.status(201).json(post);
         })
