@@ -4,6 +4,8 @@ const usersRouter = require('./users/userRouter.js');
 
 const server = express();
 
+server.use(express.json());
+
 server.use('/api/users', usersRouter);
 server.use(logger);
 
